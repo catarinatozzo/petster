@@ -49,7 +49,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_NAME: ${{ secrets.DB_NAME }}
-          DB_HOST: localhost
+          DB_HOST: mysql
           DB_PORT: 3306
 
       - name: Run tests
