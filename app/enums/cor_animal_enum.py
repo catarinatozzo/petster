@@ -7,3 +7,4 @@ class CorAnimalEnum(str, Enum):
     marrom = "Marrom"
     amarelo = "Amarelo"
     laranja = "Laranja"
+    rajado = "Rajado"

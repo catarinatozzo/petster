@@ -4,6 +4,7 @@ from app.database import get_db
 from app.models import Pet
 from app.api.schemas import PetCreate, PetRead
 from typing import List, Optional
+from app.exceptions.pet_exceptions import PetNotFoundException
 
 router = APIRouter(prefix="/pets", tags=["pets"])
 
@@ -42,5 +43,5 @@ def read_pets(
 
     results = query.all()
     if not results:
-        raise HTTPException(status_code=404, detail="No pets found")
+        raise PetNotFoundException(id if id else "with the given filters")
     return results
