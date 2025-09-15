@@ -4,19 +4,28 @@ from alembic import context
 
 from app.database import Base, engine
 
+from app.config import database_url 
+
 config = context.config
 fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
 
 def run_migrations_offline():
-    url = config.get_main_option("sqlalchemy.url") or "mysql+pymysql://usuario:senha@localhost:3306/meubanco"
-    context.configure(url=url, target_metadata=target_metadata, literal_binds=True)
+    """Run migrations in 'offline' mode."""
+    context.configure(
+        url=database_url,  
+        target_metadata=target_metadata,
+        literal_binds=True,
+    )
     with context.begin_transaction():
         context.run_migrations()
 
 def run_migrations_online():
-    connectable = engine
+    """Run migrations in 'online' mode."""
+    from sqlalchemy import create_engine
+
+    connectable = create_engine(database_url)
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)
         with context.begin_transaction():
