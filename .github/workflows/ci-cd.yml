@@ -29,13 +29,22 @@ jobs:
           --health-retries=5
 
     env:
-      DB_USER: root
-      DB_PASS: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_HOST: mysql
       DB_PORT: 3306
 
     steps:
+
+      - name: Debug DB URL
+        run: |
+          echo "DB_USER=$DB_USER"
+          echo "DB_PASS=$DB_PASS"
+          echo "DB_HOST=$DB_HOST"
+          echo "DB_NAME=$DB_NAME"
+          echo "DB_PORT=$DB_PORT"
+
       - name: Checkout repository
         uses: actions/checkout@v3
 

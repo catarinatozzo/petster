@@ -1,8 +1,11 @@
 import os
 
-db_user = os.getenv("DB_USER", os.getenv("MYSQL_USER", "root"))
-db_pass = os.getenv("DB_PASS", os.getenv("MYSQL_PASSWORD", "senha"))
-db_name = os.getenv("DB_NAME", os.getenv("MYSQL_DATABASE", "petster"))
-db_host = os.getenv("DB_HOST", "db")
-db_port = os.getenv("DB_PORT", "3306")
-database_url = f"mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASS = os.getenv("DB_PASS", "")
+DB_NAME = os.getenv("DB_NAME", "testdb")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "3306")
+
+database_url = (
+    f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
