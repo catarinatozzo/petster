@@ -20,7 +20,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-          MYSQL_PASSWORD: ${{ secrets.DB_PASS }}
         ports:
           - 3306:3306
         options: >-
@@ -30,13 +29,11 @@ jobs:
           --health-retries=5
 
     env:
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASS: ${{ secrets.DB_PASS }}
+      DB_USER: root
+      DB_PASS: ${{ secrets.MYSQL_ROOT_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-      DB_HOST: mysql
+      DB_HOST: mysql  
       DB_PORT: 3306
-      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-
 
     steps:
       - name: Checkout repository
@@ -70,4 +67,3 @@ jobs:
       - name: Run tests
         run: |
           pytest --disable-warnings -v
-
