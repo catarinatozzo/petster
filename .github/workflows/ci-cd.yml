@@ -34,6 +34,7 @@ jobs:
       DB_NAME: ${{ secrets.DB_NAME }} 
       DB_HOST: mysql
       DB_PORT: 3306
+      SQLALCHEMY_URL: ${{ secrets.SQLALCHEMY_URL }} 
 
     steps:
   
@@ -51,8 +52,6 @@ jobs:
           pip install -r requirements.txt
   
       - name: Run Alembic migrations
-        env:
-          SQLALCHEMY_URL: mysql+pymysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@mysql:3306/${{ secrets.DB_NAME }}
         run: alembic upgrade head
 
       - name: Run tests
