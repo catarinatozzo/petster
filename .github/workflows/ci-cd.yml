@@ -24,7 +24,7 @@ jobs:
           MYSQL_DATABASE: ${{ secrets.DB_NAME }}
   
     env:
-      DB_USER: ${{ secrets.DB_USER }}
+      DB_USER: root
       DB_PASS: ${{ secrets.DB_PASS }}
       DB_NAME: ${{ secrets.DB_NAME }} 
       DB_HOST: mysql
@@ -44,6 +44,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+        
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h"$DB_HOST" -u"root" -p"$DB_PASS" --silent; then
+              echo "✅ Connected to MySQL!"
+              break
+            fi
+            echo "⏳ Waiting for MySQL... attempt $i"
+            sleep 2
+          done
 
       - name: Run Alembic migrations
         run: |
