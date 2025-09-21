@@ -48,7 +48,7 @@ jobs:
       - name: Wait for MySQL to be ready
         run: |
           for i in {1..60}; do
-            if mysqladmin ping -h"$DB_HOST" -u"root" -p"$DB_PASS" --silent; then
+            if mysql ping -h"$DB_HOST" -u"root" -p"$DB_PASS" --silent; then
               echo "✅ Connected to MySQL!"
               exit 0
             fi
@@ -59,9 +59,9 @@ jobs:
           exit 1
 
       - name: Run Alembic migrations
-        run: |
-          export SQLALCHEMY_URL="mysql+pymysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
-          alembic upgrade head
+        env:
+          SQLALCHEMY_URL: mysql+pymysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASS }}@mysql:3306/${{ secrets.DB_NAME }}
+        run: alembic upgrade head
 
       - name: Run tests
         run: |
