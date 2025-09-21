@@ -1,10 +1,10 @@
 from fastapi.testclient import TestClient
-from app.main import app 
+from app.main import api
 
 from app.database import get_db
 from app.models import Pet
 
-client = TestClient(app)
+client = TestClient(api)
 
 def test_read_pets_empty():
     db = next(get_db())
