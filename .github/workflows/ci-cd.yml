@@ -27,17 +27,16 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-        
+
     env:
       DB_USER: root
       DB_PASS: ${{ secrets.DB_PASS }}
-      DB_NAME: ${{ secrets.DB_NAME }} 
+      DB_NAME: ${{ secrets.DB_NAME }}
       DB_HOST: mysql
       DB_PORT: 3306
-      SQLALCHEMY_URL: ${{ secrets.SQLALCHEMY_URL }} 
+      SQLALCHEMY_URL: ${{ secrets.SQLALCHEMY_URL }}
 
     steps:
-  
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -50,10 +49,36 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-  
+
       - name: Run Alembic migrations
         run: alembic upgrade head
 
       - name: Run tests
         run: |
           pytest --disable-warnings -v
+
+      - name: Notificação de sucesso
+        if: success()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ✅ Pipeline concluído com sucesso!
+            Repositório: ${{ github.repository }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Acompanhe: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Notificação de erro
+        if: failure()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ❌ Pipeline falhou!
+            Repositório: ${{ github.repository }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Detalhes no log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
