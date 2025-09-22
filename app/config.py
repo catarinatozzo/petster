@@ -3,7 +3,7 @@ import os
 DB_USER = "root"
 DB_PASS = "rootpassword"
 DB_NAME = "pets"
-DB_HOST = "localhost"
+DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = "3306"
 
 database_url = (

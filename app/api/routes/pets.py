@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query, Path
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Pet
 from app.api.schemas import PetCreate, PetRead
-from typing import List, Optional
+from typing import List
 from app.exceptions.pet_exceptions import PetNotFoundException
 
 router = APIRouter(prefix="/pets", tags=["pets"])
@@ -15,6 +15,13 @@ def create_pet(pet: PetCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_pet)
     return db_pet
+
+@router.get("/{pet_id}", response_model=PetRead)
+def get_pet_by_id(pet_id: str = Path(...), db: Session = Depends(get_db)):
+    pet = db.query(Pet).filter(Pet.id == pet_id).first()
+    if not pet:
+        raise PetNotFoundException()
+    return pet
 
 @router.get("/", response_model=List[PetRead])
 def read_pets(
@@ -28,8 +35,8 @@ def read_pets(
 ):
     query = db.query(Pet)
 
-    if id:
-        query = query.filter(Pet.id == id)
+    has_filters = any([id, nome, tipo, raca, cor, castrado is not None])
+
     if nome:
         query = query.filter(Pet.nome.ilike(f"%{nome}%"))
     if tipo:
@@ -42,6 +49,8 @@ def read_pets(
         query = query.filter(Pet.castrado == castrado)
 
     results = query.all()
+
     if not results:
-        raise PetNotFoundException(id if id else "with the given filters")
+        raise PetNotFoundException()
+
     return results
